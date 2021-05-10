@@ -2,6 +2,35 @@
 
 <script>
  var ctx = document.getElementById('ctx').getContext("2d");
- ctx.fillText("Hello",50,50)
+ ctx.font = '30px Ariel'
+ var x= 50;
+ var spdX=50;
+ var y = 40;
+ var spdY=5;
 
-</script>
+ setInterval(update,40);
+
+ function update(){
+     x +=spdX;
+     y +=spdY;
+
+     ctx.fillText("p",x,y);
+      if(x > 500){
+         console.log('Out of bounds')
+         spdX = -50;
+     }
+     if(x < 0){
+         console.log('Out of bounds')
+         spdX = 50;
+     }
+     if(y > 500){
+         console.log('Out of bounds')
+         spdY = -40;
+     }
+     if(y < 0){
+         console.log('Out of bounds')
+         spdY = 50;
+     }
+}
+
+</script>  
