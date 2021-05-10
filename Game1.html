@@ -8,6 +8,10 @@
  var y = 40;
  var spdY=5;
 
+ var message = 'Bouncing';
+ var WIDTH = 500;
+ var HeIGHT = 500;
+
  setInterval(update,40);
 
  function update(){
@@ -15,21 +19,13 @@
      y +=spdY;
 
      ctx.fillText("p",x,y);
-      if(x > 500){
-         console.log('Out of bounds')
-         spdX = -50;
+      if(x < 0 || x > WIDTH){
+         console.log(message)
+         spdX = -spdX;
      }
-     if(x < 0){
-         console.log('Out of bounds')
-         spdX = 50;
-     }
-     if(y > 500){
-         console.log('Out of bounds')
-         spdY = -40;
-     }
-     if(y < 0){
-         console.log('Out of bounds')
-         spdY = 50;
+     if(y<0 || y > HeIGHT){
+         console.log(message)
+         spdY = -spdY;
      }
 }
 
