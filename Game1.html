@@ -4,13 +4,15 @@
  var ctx = document.getElementById('ctx').getContext("2d");
  ctx.font = '30px Ariel';
 
+ var timeWhenGameStarted = Date.now();
  //player
  var player = {
     x:50,
     spdX:50,
     y:40,
     spdY:5,
-    name:'P'
+    name:'P',
+    hp:10
  }
 
 var enemyList = {};
@@ -86,11 +88,20 @@ getDistanceBetweenEntity = function (entity1,entity2){
      for(var key in enemyList){
          updateEntity(enemyList[key]);
          var isColliding = testCollisionEntity(player,enemyList[key]);
+
          if(isColliding){
-             console.log('Colliding')
+             player.hp = player.hp - 1;
+
+             if(player.hp <=0){
+                 var timeSurvived = Date.now() - timeWhenGameStarted;
+                 console.log('You lost! You survived for '+ timeSurvived + "ms");
+                 whenGameStarted = Date.now()
+                 player.hp = 10;
+             }
          }
         }
         drawEntity(player);
+        ctx.fillText(player.hp + ' HP',0,30);
     }
     setInterval(update,40);
 
