@@ -15,11 +15,20 @@
 
 var enemyList = {};
 
- //Enemy
- Enemy('E1',150,30,350,15);
- Enemy('E2',250,10,350,-15);
- Enemy('E3',20,30,50,-15)
- function Enemy(id,x,spdX,y,spdY){
+ 
+
+getDistanceBetweenEntity = function (entity1,entity2){
+     var vx = entity1.x - entity2.x;
+     var vy = entity1.y - entity2.y;
+     return Math.sqrt(vx*vx + vy*vy);
+ }
+
+ testCollisionEntity = function(entity1,entity2){
+     var distance = getDistanceBetweenEntity(entity1,entity2);
+     return distance < 30;
+ }
+
+ Enemy = function Enemy(id,x,spdX,y,spdY){
      var enemy3 = {
          x:x,
          spdX:spdX,
@@ -32,35 +41,49 @@ var enemyList = {};
      enemyList[id] = enemy3;
 
  }
+ //Enemy
+ Enemy('E1',150,30,350,15);
+ Enemy('E2',250,10,350,-15);
+ Enemy('E3',20,30,50,-15);
 
- var message = 'Bouncing';
+
  var WIDTH = 500;
  var HeIGHT = 500;
 
- setInterval(update,40);
+ updateEntity = function(something){
+   drawEntity(something);
+   updateEntityPosition(something); 
+ }
 
- function updateEntity(something){
+ updateEntityPosition = function(something){
     something.x +=something.spdX;
      something.y +=something.spdY;
 
-     ctx.fillText(something.name,something.x,something.y);
+     
      if(something.x < 0 || something.x > WIDTH){
-         console.log(message)
          something.spdX = -something.spdX;
      }
      if(something.y<0 || something.y > HeIGHT){
-         console.log(message)
          something.spdY = -something.spdY;
      }
  }
 
- function update(){
-     ctx.clearRect(0,0,WIDTH,HeIGHT);
-     updateEntity(player);
+ drawEntity = function(something){
+    ctx.fillText(something.name,something.x,something.y);
+ }
 
+ update = function(){
+     ctx.clearRect(0,0,WIDTH,HeIGHT);
+     
      for(var key in enemyList){
          updateEntity(enemyList[key]);
-     }
-}
+         var isColliding = testCollisionEntity(player,enemyList[key]);
+         if(isColliding){
+             console.log('Colliding')
+         }
+        }
+        updateEntity(player);
+    }
+    setInterval(update,40);
 
 </script>  
