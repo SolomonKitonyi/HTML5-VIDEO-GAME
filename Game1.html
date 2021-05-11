@@ -3,8 +3,11 @@
 <script>
  var ctx = document.getElementById('ctx').getContext("2d");
  ctx.font = '30px Ariel';
+ var WIDTH = 500;
+ var HEIGHT = 500;
 
  var timeWhenGameStarted = Date.now();
+ var frameCount = 0;
  //player
  var player = {
     x:50,
@@ -60,14 +63,18 @@ getDistanceBetweenEntity = function (entity1,entity2){
      enemyList[id] = enemy3;
 
  }
- //Enemy
- Enemy('E1',150,30,350,15,30,30);
- Enemy('E2',250,10,350,-15,30,40);
- Enemy('E3',20,30,50,-15,40,20,40);
 
-
- var WIDTH = 500;
- var HEIGHT = 500;
+ randomlyGenerateEnemy = function(){
+     var x = Math.random()*WIDTH;
+     var y = Math.random()* HEIGHT;
+     var height = 10 + Math.random()*30;
+     var width = 10 + Math.random()*30;
+     var id = Math.random();
+     var spdX = 5 + Math.random()*5;
+     var spdY = 5 + Math.random()*5;
+     Enemy(id,x,spdX,y,spdY,width,height);
+ }
+ 
 
  document.onmousemove = function(mouse){
      var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
@@ -118,6 +125,11 @@ testCollisionRectRect = function(rect1,rect2){
 
  update = function(){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
+
+     frameCount ++;
+     if(frameCount % 100 === 0){
+         randomlyGenerateEnemy();
+     }
      
      for(var key in enemyList){
          updateEntity(enemyList[key]);
@@ -126,17 +138,29 @@ testCollisionRectRect = function(rect1,rect2){
          if(isColliding){
              player.hp = player.hp - 1;
 
-             if(player.hp <=0){
-                 var timeSurvived = Date.now() - timeWhenGameStarted;
-                 console.log('You lost! You survived for '+ timeSurvived + "ms");
-                 whenGameStarted = Date.now()
-                 player.hp = 10;
-             }
          }
         }
+
+        if(player.hp <=0){
+                 var timeSurvived = Date.now() - timeWhenGameStarted;
+                 console.log('You lost! You survived for '+ timeSurvived + "ms"); 
+                 startNewGame();
+         }
+
         drawEntity(player);
         ctx.fillText(player.hp + ' HP',0,30);
     }
+
+    startNewGame = function(){
+        player.hp = 10;
+        whenGameStarted = Date.now();
+        frameCount = 0;
+        enemyList = {};
+        randomlyGenerateEnemy();
+        randomlyGenerateEnemy();
+        randomlyGenerateEnemy();
+    }
+    startNewGame();
     setInterval(update,40);
 
 </script>  
