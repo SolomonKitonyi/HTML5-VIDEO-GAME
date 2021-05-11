@@ -50,6 +50,14 @@ getDistanceBetweenEntity = function (entity1,entity2){
  var WIDTH = 500;
  var HeIGHT = 500;
 
+ document.onmousemove = function(mouse){
+     var mouseX = mouse.clientX;
+     var mouseY = mouse.clientY;
+
+     player.x = mouseX;
+     player.y = mouseY;
+ }
+
  updateEntity = function(something){
    drawEntity(something);
    updateEntityPosition(something); 
@@ -82,7 +90,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
              console.log('Colliding')
          }
         }
-        updateEntity(player);
+        drawEntity(player);
     }
     setInterval(update,40);
 
