@@ -67,11 +67,20 @@ getDistanceBetweenEntity = function (entity1,entity2){
 
 
  var WIDTH = 500;
- var HeIGHT = 500;
+ var HEIGHT = 500;
 
  document.onmousemove = function(mouse){
-     var mouseX = mouse.clientX;
-     var mouseY = mouse.clientY;
+     var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+     var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+
+     if(mouseX < 0)
+      mouseX = 0;
+     if(mouseX > WIDTH)
+      mousex = width;
+     if(mouseY < 0)
+      mouseY = 0;
+     if(mouseY > HEIGHT)
+      mouseY = height;
 
      player.x = mouseX;
      player.y = mouseY;
@@ -90,7 +99,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
      if(something.x < 0 || something.x > WIDTH){
          something.spdX = -something.spdX;
      }
-     if(something.y<0 || something.y > HeIGHT){
+     if(something.y<0 || something.y > HEIGHT){
          something.spdY = -something.spdY;
      }
  }
@@ -107,7 +116,7 @@ testCollisionRectRect = function(rect1,rect2){
  }
 
  update = function(){
-     ctx.clearRect(0,0,WIDTH,HeIGHT);
+     ctx.clearRect(0,0,WIDTH,HEIGHT);
      
      for(var key in enemyList){
          updateEntity(enemyList[key]);
