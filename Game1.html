@@ -202,7 +202,17 @@ getDistanceBetweenEntity = function (entity1,entity2){
        player.y += 10;
      if(player.pressingUp)
        player.y -= 10; 
+     
+     //isPositionValid
+     if(player.x < player.width/2)
+      player.x = player.width/2;
+     if(player.x > WIDTH-player.width/2)
+      player.x = WIDTH-player.width/2;
 
+     if(player.y < player.height/2)
+      player.y = player.height/2;
+     if(player.y > HEIGHT-player.height/2)
+      player.y = HEIGHT-player.height/2;
 
  }
 
