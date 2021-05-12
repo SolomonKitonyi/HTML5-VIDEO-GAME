@@ -8,6 +8,8 @@
 
  var timeWhenGameStarted = Date.now();
  var frameCount = 0;
+ var score = 0;
+
  //player
  var player = {
     x:50,
@@ -22,6 +24,7 @@
  }
 
 var enemyList = {};
+var upgradeList = {};
 
  
 
@@ -64,6 +67,23 @@ getDistanceBetweenEntity = function (entity1,entity2){
 
  }
 
+ upgrade = function (id,x,spdX,y,spdY,width,height){
+     var upgrade = {
+         x:x,
+         spdX:spdX,
+         y:y,
+         spdY:spdX,
+         name:'E',
+         id:id,
+         width:width,
+         height:height,
+         color:'orange'
+     }
+    
+     upgradeList[id] = upgrade;
+
+ }
+
  randomlyGenerateEnemy = function(){
      var x = Math.random()*WIDTH;
      var y = Math.random()* HEIGHT;
@@ -73,6 +93,17 @@ getDistanceBetweenEntity = function (entity1,entity2){
      var spdX = 5 + Math.random()*5;
      var spdY = 5 + Math.random()*5;
      Enemy(id,x,spdX,y,spdY,width,height);
+ }
+
+ randomlyGenerateUpgrade = function(){
+     var x = Math.random()*WIDTH;
+     var y = Math.random()* HEIGHT;
+     var height = 10;
+     var width = 10;
+     var id = Math.random();
+     var spdX = 0;
+     var spdY = 0;
+     upgrade(id,x,spdX,y,spdY,width,height);
  }
  
 
@@ -127,8 +158,17 @@ testCollisionRectRect = function(rect1,rect2){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
 
      frameCount ++;
+     score ++;
      if(frameCount % 100 === 0){
          randomlyGenerateEnemy();
+     }
+
+     if(frameCount % 75 === 0){
+         randomlyGenerateUpgrade();
+     }
+
+     for(var key in upgradeList){
+         updateEntity(upgradeList[key])
      }
      
      for(var key in enemyList){
@@ -149,11 +189,13 @@ testCollisionRectRect = function(rect1,rect2){
 
         drawEntity(player);
         ctx.fillText(player.hp + ' HP',0,30);
+        ctx.fillText("Score: " + score,200,30);
     }
 
     startNewGame = function(){
         player.hp = 10;
         whenGameStarted = Date.now();
+        score = 0;
         frameCount = 0;
         enemyList = {};
         randomlyGenerateEnemy();
