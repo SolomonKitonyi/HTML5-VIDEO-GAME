@@ -68,7 +68,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
 
  }
 
- upgrade = function (id,x,spdX,y,spdY,width,height){
+ upgrade = function (id,x,spdX,y,spdY,width,height,category,color){
      var upgrade = {
          x:x,
          spdX:spdX,
@@ -78,7 +78,8 @@ getDistanceBetweenEntity = function (entity1,entity2){
          id:id,
          width:width,
          height:height,
-         color:'orange'
+         color:color,
+         category:category
      }
     
      upgradeList[id] = upgrade;
@@ -95,7 +96,8 @@ getDistanceBetweenEntity = function (entity1,entity2){
          id:id,
          width:width,
          height:height,
-         color:'black'
+         color:'black',
+         timer:0
      }
     
      bulletList[id] = bullet;
@@ -121,7 +123,16 @@ getDistanceBetweenEntity = function (entity1,entity2){
      var id = Math.random();
      var spdX = 0;
      var spdY = 0;
-     upgrade(id,x,spdX,y,spdY,width,height);
+
+     if(Math.random() < 0.5){
+         var category = 'low';
+         var color = 'orange';
+     }
+     else{
+         var category = 'high';
+         var color = 'purple';
+     }
+     upgrade(id,x,spdX,y,spdY,width,height,category,color);
  }
  randomlyGenerateBullet = function(){
      var x = player.x;
@@ -202,6 +213,26 @@ testCollisionRectRect = function(rect1,rect2){
 
      for(var key in bulletList){
          updateEntity(bulletList[key]);
+
+         var toRemove = false;
+         bulletList[key].timer ++;
+
+         if(bulletList[key].timer > 75){
+             toRemove = true;
+         }
+
+         for(var key2 in enemyList){
+            var isColliding = testCollisionEntity(bulletList[key],enemyList[key2]);
+
+            if(isColliding){
+                delete bulletList[key]
+                delete enemyList[key2];
+                break;
+            }
+         }
+         if(toRemove){
+             delete bulletList[key];
+         }
      }
 
      for(var key in upgradeList){
@@ -210,7 +241,12 @@ testCollisionRectRect = function(rect1,rect2){
          var isColliding = testCollisionEntity(player,upgradeList[key]);
 
          if(isColliding){
-             score += 1000;
+             if(upgradeList[key].category === 'low'){
+                 score += 1000;
+             }
+             if(upgradeList[key].category === 'high'){
+                 score += 10000;
+             }
              delete upgradeList[key];
 
          }
@@ -244,6 +280,7 @@ testCollisionRectRect = function(rect1,rect2){
         frameCount = 0;
         enemyList = {};
         upgradeList = {};
+        bulletList = {};
         randomlyGenerateEnemy();
         randomlyGenerateEnemy();
         randomlyGenerateEnemy();
