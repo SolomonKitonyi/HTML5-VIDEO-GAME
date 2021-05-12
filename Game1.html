@@ -21,7 +21,12 @@
     width:20,
     height:20,
     color:'green',
-    atkSpd:1
+    atkSpd:1,
+    attackCounter:0,
+    pressingUp:false,
+    pressingDown:false,
+    pressingLeft:false,
+    pressingRight:false
  }
 
 var enemyList = {};
@@ -149,7 +154,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
  
 
  document.onmousemove = function(mouse){
-     var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+     /*var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
      var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
 
      if(mouseX < player.width/2)
@@ -163,7 +168,42 @@ getDistanceBetweenEntity = function (entity1,entity2){
       mouseY = HEIGHT-player.height/2;
 
      player.x = mouseX;
-     player.y = mouseY;
+     player.y = mouseY;*/
+ }
+
+ document.onkeydown = function(event){
+     if(event.keyCode === 68)//d
+       player.pressingRight = true;
+     else if(event.keyCode === 83)//s
+        player.pressingDown = true;
+     else if(event.keyCode === 65)//a
+        player.pressingLeft = true;
+     else if(event.keyCode === 87)//w
+         player.pressingUp = true;
+ }
+
+ document.onkeyup = function(event){
+     if(event.keyCode === 68)//d
+       player.pressingRight = false;
+     else if(event.keyCode === 83)//s
+        player.pressingDown = false;
+     else if(event.keyCode === 65)//a
+        player.pressingLeft = false;
+     else if(event.keyCode === 87)//w
+         player.pressingUp = false;
+ }
+
+ updatePlayerPosition = function(){
+     if(player.pressingRight)
+       player.x += 10;
+     if(player.pressingLeft)
+       player.x -= 10;
+     if(player.pressingDown) 
+       player.y += 10;
+     if(player.pressingUp)
+       player.y -= 10; 
+
+
  }
 
  updateEntity = function(something){
@@ -195,6 +235,13 @@ testCollisionRectRect = function(rect1,rect2){
     ctx.restore();
  }
 
+ document.onclick = function(mouse){
+    if(player.attackCounter > 25){
+         randomlyGenerateBullet();
+         player.attackCounter = 0;
+     }
+ }
+ var counter = 0;
  update = function(){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
 
@@ -207,10 +254,8 @@ testCollisionRectRect = function(rect1,rect2){
      if(frameCount % 75 === 0){
          randomlyGenerateUpgrade();
      }
-
-     if(frameCount % Math.round(25/player.atkSpd )=== 0){
-         randomlyGenerateBullet();
-     }
+     player.attackCounter += player.atkSpd;
+     
 
      for(var key in bulletList){
          updateEntity(bulletList[key]);
@@ -269,6 +314,7 @@ testCollisionRectRect = function(rect1,rect2){
                  startNewGame();
          }
 
+         updatePlayerPosition();
         drawEntity(player);
         ctx.fillText(player.hp + ' HP',0,30);
         ctx.fillText("Score: " + score,200,30);
