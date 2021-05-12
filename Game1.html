@@ -26,7 +26,8 @@
     pressingUp:false,
     pressingDown:false,
     pressingLeft:false,
-    pressingRight:false
+    pressingRight:false,
+    aimAngle:0
  }
 
 var enemyList = {};
@@ -146,7 +147,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
      var height = 10;
      var width = 10;
      var id = Math.random();
-     var angle = Math.random()*360;
+     var angle = player.aimAngle;
      var spdX = Math.cos(angle/180 * Math.PI)*5;
      var spdY = Math.sin(angle/180 * Math.PI)*5;
      Bullet(id,x,spdX,y,spdY,width,height);
@@ -154,21 +155,13 @@ getDistanceBetweenEntity = function (entity1,entity2){
  
 
  document.onmousemove = function(mouse){
-     /*var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+     var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
      var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
 
-     if(mouseX < player.width/2)
-      mouseX = player.width/2;
-     if(mouseX > WIDTH-player.width/2)
-      mouseX = WIDTH-player.width/2;
-
-     if(mouseY < player.height/2)
-      mouseY = player.height/2;
-     if(mouseY > HEIGHT-player.height/2)
-      mouseY = HEIGHT-player.height/2;
-
      player.x = mouseX;
-     player.y = mouseY;*/
+     player.y = mouseY;
+
+     player.aimAngle = Math.atan2(mouseX,mouseY) / Math.PI * 180;
  }
 
  document.onkeydown = function(event){
