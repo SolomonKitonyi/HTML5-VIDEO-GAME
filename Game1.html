@@ -58,7 +58,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
      return testCollisionRectRect(rect1,rect2)
  }
 
- Enemy = function Enemy(id,x,spdX,y,spdY,width,height){
+ Enemy = function(id,x,spdX,y,spdY,width,height){
      var enemy3 = {
          x:x,
          spdX:spdX,
@@ -68,7 +68,8 @@ getDistanceBetweenEntity = function (entity1,entity2){
          id:id,
          width:width,
          height:height,
-         color:'red'
+         color:'red',
+         aimAngle:0
      }
     
      enemyList[id] = enemy3;
@@ -141,13 +142,16 @@ getDistanceBetweenEntity = function (entity1,entity2){
      }
      upgrade(id,x,spdX,y,spdY,width,height,category,color);
  }
- randomlyGenerateBullet = function(){
-     var x = player.x;
-     var y = player.y;
+ randomlyGenerateBullet = function(actor,overWriteAngle){
+     var x = actor.x;
+     var y = actor.y;
      var height = 10;
      var width = 10;
      var id = Math.random();
-     var angle = player.aimAngle;
+     var angle = actor.aimAngle;
+     if(overWriteAngle !== undefined){
+         angle = overWriteAngle;
+     }
      var spdX = Math.cos(angle/180 * Math.PI)*5;
      var spdY = Math.sin(angle/180 * Math.PI)*5;
      Bullet(id,x,spdX,y,spdY,width,height);
@@ -240,9 +244,20 @@ testCollisionRectRect = function(rect1,rect2){
 
  document.onclick = function(mouse){
     if(player.attackCounter > 25){
-         randomlyGenerateBullet();
+         randomlyGenerateBullet(player);
          player.attackCounter = 0;
      }
+ }
+
+ document.oncontextmenu = function(mouse){//on right click
+    if(player.attackCounter > 50){
+         randomlyGenerateBullet(player,player.aimAngle-5);
+         randomlyGenerateBullet(player,player.aimAngle);
+         randomlyGenerateBullet(player,player.aimAngle+5);
+
+         player.attackCounter = 0;
+     }
+     mouse.preventDefault();
  }
  var counter = 0;
  update = function(){
