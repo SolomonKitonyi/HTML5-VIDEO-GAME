@@ -250,10 +250,10 @@ testCollisionRectRect = function(rect1,rect2){
  }
 
  document.oncontextmenu = function(mouse){//on right click
-    if(player.attackCounter > 50){
-         randomlyGenerateBullet(player,player.aimAngle-5);
-         randomlyGenerateBullet(player,player.aimAngle);
-         randomlyGenerateBullet(player,player.aimAngle+5);
+    if(player.attackCounter > 1){
+         for(angle = 0; angle <= 360; angle ++){
+            randomlyGenerateBullet(player,angle);
+         }
 
          player.attackCounter = 0;
      }
