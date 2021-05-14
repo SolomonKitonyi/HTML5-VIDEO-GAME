@@ -10,21 +10,27 @@
  var frameCount = 0;
  var score = 0;
 
+ Entity = function(type,id,x,y,spdX,spdY,width,height,color){
+    var self={
+        type:type,
+        id:id,
+        x:x,
+        y:y,
+        spdX:spdX,
+        spdY:spdY,
+        width: width,
+        height:height,
+        color
+    }
+    return self;
+
+
+ }
  //player
- var self;
+ 
 
  createPlayer = function(){
-    self = {
-        type:'player',
-        x:50,
-        spdX:50,
-        y:40,
-        spdY:5,
-        name:'P',
-        width:20,
-        height:20,
-        color:'green'
-    }
+    self = Entity('player','myid',50,40,30,5,20,20,'green')
         self.hp = 10,
         self.atkSpd = 1,
         self.attackCounter = 0,
@@ -66,18 +72,7 @@ getDistanceBetweenEntity = function (entity1,entity2){
  }
 
  Enemy = function(id,x,spdX,y,spdY,width,height){
-     var self = {
-         type:'enemy',
-         x:x,
-         spdX:spdX,
-         y:y,
-         spdY:spdX,
-         name:'E',
-         id:id,
-         width:width,
-         height:height,
-         color:'red'
-     }
+     var self = Entity('enemy',id,x,y,spdX,spdY,width,height,'red');
          self.hp = 10; 
          self.aimAngle = 0,
          self.atkSpd = 1,
@@ -88,40 +83,16 @@ getDistanceBetweenEntity = function (entity1,entity2){
  }
 
  upgrade = function (id,x,spdX,y,spdY,width,height,category,color){
-     var upgrade = {
-         type:'upgrade',
-         x:x,
-         spdX:spdX,
-         y:y,
-         spdY:spdX,
-         name:'E',
-         id:id,
-         width:width,
-         height:height,
-         color:color,
-         category:category
-     }
-    
-     upgradeList[id] = upgrade;
+     var self = Entity('upgrade',id,x,y,spdX,spdY,width,height,color);
+         self.category = category;
+         upgradeList[id] = self;
 
  }
 
  Bullet = function (id,x,spdX,y,spdY,width,height){
-     var bullet = {
-         type:'bullet',
-         x:x,
-         spdX:spdX,
-         y:y,
-         spdY:spdX,
-         name:'E',
-         id:id,
-         width:width,
-         height:height,
-         color:'black',
-         timer:0
-     }
-    
-     bulletList[id] = bullet;
+     var self = Entity('enemy',id,x,y,spdX,spdY,width,height,'black');
+         self.timer = 0
+         bulletList[id] = self;
 
  }
 
