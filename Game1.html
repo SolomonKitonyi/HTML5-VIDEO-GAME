@@ -31,6 +31,27 @@
      ctx.fillStyle = self.color;
      ctx.fillRect(self.x-self.width/2,self.y-self.height/2,self.width,self.height);
      ctx.restore();
+    };
+    self.getDistance = function (entity2){
+     var vx = self.x - entity2.x;
+     var vy = self.y - entity2.y;
+     return Math.sqrt(vx*vx + vy*vy);
+ }
+
+    self.testCollision = function(entity2){
+        var rect1 = {
+            x:self.x-self.width/2,
+            y:self.y-self.height/2,
+            width:self.width,
+            height:self.height
+        }
+        var rect2 = {
+            x:entity2.x-entity2.width/2,
+            y:entity2.y-entity2.height/2,
+            width:entity2.width,
+            height:entity2.height
+        }
+        return testCollisionRectRect(rect1,rect2)
     }
     self.updatePosition = function(){
 
@@ -95,30 +116,6 @@
 var enemyList = {};
 var upgradeList = {};
 var bulletList = {};
-
- 
-
-getDistanceBetweenEntity = function (entity1,entity2){
-     var vx = entity1.x - entity2.x;
-     var vy = entity1.y - entity2.y;
-     return Math.sqrt(vx*vx + vy*vy);
- }
-
- testCollisionEntity = function(entity1,entity2){
-     var rect1 = {
-         x:entity1.x-entity1.width/2,
-         y:entity1.y-entity1.height/2,
-         width:entity1.width,
-         height:entity1.height
-     }
-     var rect2 = {
-         x:entity2.x-entity2.width/2,
-         y:entity2.y-entity2.height/2,
-         width:entity2.width,
-         height:entity2.height
-     }
-     return testCollisionRectRect(rect1,rect2)
- }
 
  Enemy = function(id,x,spdX,y,spdY,width,height){
      var self = Entity('enemy',id,x,y,spdX,spdY,width,height,'red');
@@ -284,7 +281,7 @@ testCollisionRectRect = function(rect1,rect2){
          }
 
          for(var key2 in enemyList){
-            var isColliding = testCollisionEntity(bulletList[key],enemyList[key2]);
+            var isColliding = bulletList[key].testCollision(enemyList[key2]);
 
             if(isColliding){
                 delete bulletList[key]
@@ -300,7 +297,7 @@ testCollisionRectRect = function(rect1,rect2){
      for(var key in upgradeList){
          upgradeList[key].update();
 
-         var isColliding = testCollisionEntity(player,upgradeList[key]);
+         var isColliding = player.testCollision(upgradeList[key]);
 
          if(isColliding){
              if(upgradeList[key].category === 'score'){
@@ -316,7 +313,7 @@ testCollisionRectRect = function(rect1,rect2){
      
      for(var key in enemyList){
          enemyList[key].update();
-         var isColliding = testCollisionEntity(player,enemyList[key]);
+         var isColliding = player.testCollision(enemyList[key]);
 
          if(isColliding){
              player.hp = player.hp - 1;
