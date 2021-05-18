@@ -114,6 +114,33 @@
         self.attackCounter = 0,
         self.aimAngle = 0
 
+        var super_update = self.update; 
+        self.update = function(){
+            super_update();
+            self.attackCounter += self.atkSpd;
+        }
+
+        self.performAttack = function(self){
+            if(self.attackCounter > 25){
+                generateBullets(self);
+                self.attackCounter = 0;
+            }
+        }
+
+        self.performSpecialAttack = function(self){
+            if(self.attackCounter > 1){
+                /*for(angle = 0; angle <= 360; angle ++){
+                    generateBullets(self,angle);
+                }*/
+
+                generateBullets(self,self.aimAngle-5);
+                generateBullets(self,self.aimAngle);
+                generateBullets(self,self.aimAngle+5);
+
+                self.attackCounter = 0;
+            }
+         }
+
         return self
  }
 
@@ -226,34 +253,14 @@ testCollisionRectRect = function(rect1,rect2){
 }
 
  document.onclick = function(mouse){
-    performAttack(player);
- }
-
- performAttack = function(actor){
-    if(actor.attackCounter > 25){
-         generateBullets(actor);
-         actor.attackCounter = 0;
-     }
+    player.performAttack(player);
  }
 
  document.oncontextmenu = function(mouse){//on right click
-     performSpecialAttack(player);
+     player.performSpecialAttack(player);
      mouse.preventDefault();
  }
 
- performSpecialAttack = function(actor){
-    if(actor.attackCounter > 1){
-         /*for(angle = 0; angle <= 360; angle ++){
-            generateBullets(actor,angle);
-         }*/
-
-         generateBullets(actor,actor.aimAngle-5);
-         generateBullets(actor,actor.aimAngle);
-         generateBullets(actor,actor.aimAngle+5);
-
-         actor.attackCounter = 0;
-     }
- }
  var counter = 0;
  update = function(){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
@@ -281,13 +288,13 @@ testCollisionRectRect = function(rect1,rect2){
          }
 
          for(var key2 in enemyList){
-            var isColliding = bulletList[key].testCollision(enemyList[key2]);
+            /*var isColliding = bulletList[key].testCollision(enemyList[key2]);
 
             if(isColliding){
                 delete bulletList[key]
                 delete enemyList[key2];
                 break;
-            }
+            }*/
          }
          if(toRemove){
              delete bulletList[key];
@@ -313,6 +320,7 @@ testCollisionRectRect = function(rect1,rect2){
      
      for(var key in enemyList){
          enemyList[key].update();
+
          var isColliding = player.testCollision(enemyList[key]);
 
          if(isColliding){
