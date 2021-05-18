@@ -2,7 +2,7 @@ var enemyList = {};
 var upgradeList = {};
 var bulletList = {};
 var player;
-Entity = function (type, id, x, y, spdX, spdY, width, height, color) {
+Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 	var self = {
 		type: type,
 		id: id,
@@ -12,7 +12,7 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, color) {
 		spdY: spdY,
 		width: width,
 		height: height,
-		color,
+		img,
 	};
 	self.update = function () {
 		self.updatePosition();
@@ -20,13 +20,9 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, color) {
 	};
 	self.draw = function () {
 		ctx.save();
-		ctx.fillStyle = self.color;
-		ctx.fillRect(
-			self.x - self.width / 2,
-			self.y - self.height / 2,
-			self.width,
-			self.height
-		);
+		var x = self.x - self.width / 2;
+		var y = self.y - self.height / 2;
+		ctx.drawImage(self.img, x, y);
 		ctx.restore();
 	};
 	self.getDistance = function (entity2) {
@@ -68,7 +64,7 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, color) {
 //player
 
 player = function () {
-	var self = Actor("player", "myid", 50, 40, 30, 5, 20, 20, "green", 10, 1);
+	var self = Actor("player", "myid", 50, 40, 30, 5, 20, 20, Img.player, 10, 1);
 	(self.pressingUp = false),
 		(self.pressingDown = false),
 		(self.pressingLeft = false),
@@ -103,20 +99,8 @@ player = function () {
 	return self;
 };
 
-Actor = function (
-	type,
-	id,
-	x,
-	spdX,
-	y,
-	spdY,
-	width,
-	height,
-	color,
-	hp,
-	atkSpd
-) {
-	var self = Entity(type, id, x, y, spdX, spdY, width, height, color);
+Actor = function (type, id, x, spdX, y, spdY, width, height, img, hp, atkSpd) {
+	var self = Entity(type, id, x, y, spdX, spdY, width, height, img);
 	(self.hp = hp),
 		(self.atkSpd = atkSpd),
 		(self.attackCounter = 0),
@@ -153,7 +137,19 @@ Actor = function (
 };
 
 Enemy = function (id, x, spdX, y, spdY, width, height) {
-	var self = Entity("enemy", id, x, y, spdX, spdY, width, height, "red", 10, 1);
+	var self = Entity(
+		"enemy",
+		id,
+		x,
+		y,
+		spdX,
+		spdY,
+		width,
+		height,
+		Img.enemy,
+		10,
+		1
+	);
 
 	var super_update = self.update;
 	self.update = function () {
@@ -167,8 +163,8 @@ Enemy = function (id, x, spdX, y, spdY, width, height) {
 	enemyList[id] = self;
 };
 
-upgrade = function (id, x, spdX, y, spdY, width, height, category, color) {
-	var self = Entity("upgrade", id, x, y, spdX, spdY, width, height, color);
+upgrade = function (id, x, spdX, y, spdY, width, height, category, img) {
+	var self = Entity("upgrade", id, x, y, spdX, spdY, width, height, img);
 
 	super_update = self.update;
 	self.update = function () {
@@ -190,7 +186,7 @@ upgrade = function (id, x, spdX, y, spdY, width, height, category, color) {
 };
 
 Bullet = function (id, x, spdX, y, spdY, width, height) {
-	var self = Entity("enemy", id, x, y, spdX, spdY, width, height, "black");
+	var self = Entity("enemy", id, x, y, spdX, spdY, width, height, Img.bullet);
 	self.timer = 0;
 
 	var super_update = self.update;
@@ -217,4 +213,47 @@ Bullet = function (id, x, spdX, y, spdY, width, height) {
 		}
 	};
 	bulletList[id] = self;
+};
+randomlyGenerateEnemy = function () {
+	var x = Math.random() * WIDTH;
+	var y = Math.random() * HEIGHT;
+	var height = 10 + Math.random() * 30;
+	var width = 10 + Math.random() * 30;
+	var id = Math.random();
+	var spdX = 5 + Math.random() * 5;
+	var spdY = 5 + Math.random() * 5;
+	Enemy(id, x, spdX, y, spdY, width, height);
+};
+
+randomlyGenerateUpgrade = function () {
+	var x = Math.random() * WIDTH;
+	var y = Math.random() * HEIGHT;
+	var height = 10;
+	var width = 10;
+	var id = Math.random();
+	var spdX = 0;
+	var spdY = 0;
+
+	if (Math.random() < 0.5) {
+		var category = "score";
+		var img = Img.upgrade1;
+	} else {
+		var category = "atkSpd";
+		var img = Img.upgrade2;
+	}
+	upgrade(id, x, spdX, y, spdY, width, height, category, img);
+};
+generateBullets = function (actor, overWriteAngle) {
+	var x = actor.x;
+	var y = actor.y;
+	var height = 10;
+	var width = 10;
+	var id = Math.random();
+	var angle = actor.aimAngle;
+	if (overWriteAngle !== undefined) {
+		angle = overWriteAngle;
+	}
+	var spdX = Math.cos((angle / 180) * Math.PI) * 5;
+	var spdY = Math.sin((angle / 180) * Math.PI) * 5;
+	Bullet(id, x, spdX, y, spdY, width, height);
 };

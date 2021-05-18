@@ -1,6 +1,6 @@
  
 <canvas id="ctx" width="500" height="500" style="border: 1px solid #000000;"></canvas>
-<script src="Entities.js"></script>
+<script src="js/Entities.js"></script>
 <script>
  var ctx = document.getElementById('ctx').getContext("2d");
  ctx.font = '30px Ariel';
@@ -11,51 +11,19 @@
  var frameCount = 0;
  var score = 0;
 
-
- randomlyGenerateEnemy = function(){
-     var x = Math.random()*WIDTH;
-     var y = Math.random()* HEIGHT;
-     var height = 10 + Math.random()*30;
-     var width = 10 + Math.random()*30;
-     var id = Math.random();
-     var spdX = 5 + Math.random()*5;
-     var spdY = 5 + Math.random()*5;
-     Enemy(id,x,spdX,y,spdY,width,height);
- }
-
- randomlyGenerateUpgrade = function(){
-     var x = Math.random()*WIDTH;
-     var y = Math.random()* HEIGHT;
-     var height = 10;
-     var width = 10;
-     var id = Math.random();
-     var spdX = 0;
-     var spdY = 0;
-
-     if(Math.random() < 0.5){
-         var category = 'score';
-         var color = 'orange';
-     }
-     else{
-         var category = 'atkSpd';
-         var color = 'purple';
-     }
-     upgrade(id,x,spdX,y,spdY,width,height,category,color);
- }
- generateBullets = function(actor,overWriteAngle){
-     var x = actor.x;
-     var y = actor.y;
-     var height = 10;
-     var width = 10;
-     var id = Math.random();
-     var angle = actor.aimAngle;
-     if(overWriteAngle !== undefined){
-         angle = overWriteAngle;
-     }
-     var spdX = Math.cos(angle/180 * Math.PI)*5;
-     var spdY = Math.sin(angle/180 * Math.PI)*5;
-     Bullet(id,x,spdX,y,spdY,width,height);
- }
+ var Img ={}
+ Img.player = new Image();
+ Img.player.src = "img/player.png";
+ Img.enemy = new Image();
+ Img.enemy.src = "img/enemy.png";
+ Img.bullet = new Image();
+ Img.bullet.src = "img/bullet.png";
+ Img.upgrade1 = new Image();
+ Img.upgrade1.src = "img/upgrade1.png";
+ Img.upgrade2 = new Image();
+ Img.upgrade2.src = "img/upgrade2.png";
+ Img.map = new Image();
+ Img.map.src = "img/map.png";
  
 
  document.onmousemove = function(mouse){
