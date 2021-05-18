@@ -1,3 +1,4 @@
+ 
 <canvas id="ctx" width="500" height="500" style="border: 1px solid #000000;"></canvas>
 
 <script>
@@ -100,17 +101,23 @@
  
 
  player = function(){
-    self = Entity('player','myid',50,40,30,5,20,20,'green')
-        self.hp = 10,
-        self.atkSpd = 1,
-        self.attackCounter = 0,
+    var self = Actor('player','myid',50,40,30,5,20,20,'green',10,1);
         self.pressingUp = false,
         self.pressingDown = false,
         self.pressingLeft = false,
-        self.pressingRight = false,
+        self.pressingRight = false
+
+        return self;
+ }
+
+ Actor = function(type,id,x,spdX,y,spdY,width,height,color,hp,atkSpd){
+    var self = Entity(type,id,x,y,spdX,spdY,width,height,color)
+        self.hp = 10,
+        self.atkSpd = 1,
+        self.attackCounter = 0,
         self.aimAngle = 0
 
-        player = self;
+        return self
  }
 
 var enemyList = {};
@@ -344,7 +351,7 @@ testCollisionRectRect = function(rect1,rect2){
         randomlyGenerateEnemy();
         randomlyGenerateEnemy();
     }
-    player();
+    player = player();
     startNewGame();
     setInterval(update,40);
 
