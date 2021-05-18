@@ -55,31 +55,7 @@
         return testCollisionRectRect(rect1,rect2)
     }
     self.updatePosition = function(){
-
-        if(self.type == 'player'){
-            if(player.pressingRight)
-            player.x += 10;
-            if(player.pressingLeft)
-            player.x -= 10;
-            if(player.pressingDown) 
-            player.y += 10;
-            if(player.pressingUp)
-            player.y -= 10; 
-            
-            //isPositionValid
-            if(player.x < player.width/2)
-            player.x = player.width/2;
-            if(player.x > WIDTH-player.width/2)
-            player.x = WIDTH-player.width/2;
-
-            if(player.y < player.height/2)
-            player.y = player.height/2;
-            if(player.y > HEIGHT-player.height/2)
-            player.y = HEIGHT-player.height/2;
-
-        }else{
-
-            self.x +=self.spdX;
+        self.x +=self.spdX;
             self.y +=self.spdY;
 
             
@@ -89,7 +65,6 @@
             if(self.y<0 || self.y > HEIGHT){
                 self.spdY = -self.spdY;
             }
-        }
         }
 
     self.update();
@@ -106,6 +81,28 @@
         self.pressingDown = false,
         self.pressingLeft = false,
         self.pressingRight = false
+
+        self.updatePosition = function(){
+            if(player.pressingRight)
+            player.x += 10;
+            if(player.pressingLeft)
+            player.x -= 10;
+            if(player.pressingDown) 
+            player.y += 10;
+            if(player.pressingUp)
+            player.y -= 10; 
+            
+            //isPositionValidself.updatePosition
+            if(player.x < player.width/2)
+            player.x = player.width/2;
+            if(player.x > WIDTH-player.width/2)
+            player.x = WIDTH-player.width/2;
+
+            if(player.y < player.height/2)
+            player.y = player.height/2;
+            if(player.y > HEIGHT-player.height/2)
+            player.y = HEIGHT-player.height/2;
+        }
 
         return self;
  }
@@ -125,11 +122,7 @@ var upgradeList = {};
 var bulletList = {};
 
  Enemy = function(id,x,spdX,y,spdY,width,height){
-     var self = Entity('enemy',id,x,y,spdX,spdY,width,height,'red');
-         self.hp = 10; 
-         self.aimAngle = 0,
-         self.atkSpd = 1,
-         self.attackCounter = 0
+     var self = Entity('enemy',id,x,y,spdX,spdY,width,height,'red',10,1);
     
          enemyList[id] = self;
 
