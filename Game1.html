@@ -112,8 +112,8 @@
 
  Actor = function(type,id,x,spdX,y,spdY,width,height,color,hp,atkSpd){
     var self = Entity(type,id,x,y,spdX,spdY,width,height,color)
-        self.hp = 10,
-        self.atkSpd = 1,
+        self.hp = hp,
+        self.atkSpd = atkSpd,
         self.attackCounter = 0,
         self.aimAngle = 0
 
