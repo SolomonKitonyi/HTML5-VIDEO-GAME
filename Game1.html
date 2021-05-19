@@ -76,7 +76,7 @@ testCollisionRectRect = function(rect1,rect2){
  update = function(){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
      
-     drawMap();
+     currentMap.draw();
 
      frameCount ++;
      score ++;
@@ -127,10 +127,23 @@ testCollisionRectRect = function(rect1,rect2){
     startNewGame();
     setInterval(update,40);
 
-    drawMap = function(){
-        var x = WIDTH/2 - player.x;
-        var y = HEIGHT/2 - player.y;
-        ctx.drawImage(Img.map,0,0,Img.map.width,Img.map.height,x,y,Img.map.width *2, Img.map.height * 2);
+    Maps = function(id,imgSrc,width,height){
+        var self = {
+            id:id,
+            image: new Image(),
+            width:width,
+            height: height
+        }
+        self.image.src = imgSrc;
+
+        self.draw = function(){
+            var x = WIDTH/2 - player.x;
+            var y = HEIGHT/2 - player.y;
+            ctx.drawImage(self.image,0,0,self.image.width,self.image.height,x,y,self.image.width *2, self.image.height * 2);
+        }
+        return self;
     }
+
+    currentMap = Maps('field','img/map.png',1280,960);
 
 </script>  
