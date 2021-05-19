@@ -22,7 +22,20 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 		ctx.save();
 		var x = self.x - self.width / 2;
 		var y = self.y - self.height / 2;
-		ctx.drawImage(self.img, x, y);
+		//ctx.drawImage(self.img, x, y);
+
+		//parameters(image,cropStartX,cropStartY,cropWidth,cropHeight,drawX,drawY,drawWidth,drawHeight)
+		ctx.drawImage(
+			self.img,
+			0,
+			0,
+			self.img.width,
+			self.img.height,
+			x,
+			y,
+			self.width,
+			self.height
+		);
 		ctx.restore();
 	};
 	self.getDistance = function (entity2) {
@@ -64,7 +77,7 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 //player
 
 player = function () {
-	var self = Actor("player", "myid", 50, 40, 30, 5, 20, 20, Img.player, 10, 1);
+	var self = Actor("player", "myid", 50, 40, 30, 5, 50, 70, Img.player, 10, 1);
 	(self.pressingUp = false),
 		(self.pressingDown = false),
 		(self.pressingLeft = false),
@@ -217,8 +230,8 @@ Bullet = function (id, x, spdX, y, spdY, width, height) {
 randomlyGenerateEnemy = function () {
 	var x = Math.random() * WIDTH;
 	var y = Math.random() * HEIGHT;
-	var height = 10 + Math.random() * 30;
-	var width = 10 + Math.random() * 30;
+	var height = 64;
+	var width = 64;
 	var id = Math.random();
 	var spdX = 5 + Math.random() * 5;
 	var spdY = 5 + Math.random() * 5;
@@ -228,8 +241,8 @@ randomlyGenerateEnemy = function () {
 randomlyGenerateUpgrade = function () {
 	var x = Math.random() * WIDTH;
 	var y = Math.random() * HEIGHT;
-	var height = 10;
-	var width = 10;
+	var height = 32;
+	var width = 32;
 	var id = Math.random();
 	var spdX = 0;
 	var spdY = 0;
@@ -246,8 +259,8 @@ randomlyGenerateUpgrade = function () {
 generateBullets = function (actor, overWriteAngle) {
 	var x = actor.x;
 	var y = actor.y;
-	var height = 10;
-	var width = 10;
+	var height = 32;
+	var width = 32;
 	var id = Math.random();
 	var angle = actor.aimAngle;
 	if (overWriteAngle !== undefined) {

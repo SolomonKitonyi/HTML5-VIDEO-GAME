@@ -75,6 +75,8 @@ testCollisionRectRect = function(rect1,rect2){
  var counter = 0;
  update = function(){
      ctx.clearRect(0,0,WIDTH,HEIGHT);
+     
+     drawMap();
 
      frameCount ++;
      score ++;
@@ -120,8 +122,13 @@ testCollisionRectRect = function(rect1,rect2){
         randomlyGenerateEnemy();
         randomlyGenerateEnemy();
     }
+
     player = player();
     startNewGame();
     setInterval(update,40);
+
+    drawMap = function(){
+        ctx.drawImage(Img.map,0,0);
+    }
 
 </script>  
