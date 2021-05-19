@@ -20,8 +20,15 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 	};
 	self.draw = function () {
 		ctx.save();
-		var x = self.x - self.width / 2;
-		var y = self.y - self.height / 2;
+
+		var x = self.x - player.x;
+		var y = self.y - player.y;
+
+		x += WIDTH / 2;
+		y += HEIGHT / 2;
+
+		x -= self.width / 2;
+		y -= self.height / 2;
 		//ctx.drawImage(self.img, x, y);
 
 		//parameters(image,cropStartX,cropStartY,cropWidth,cropHeight,drawX,drawY,drawWidth,drawHeight)
