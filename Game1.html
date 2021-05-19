@@ -1,152 +1,195 @@
- 
-<canvas id="ctx" width="500" height="500" style="border: 1px solid #000000;"></canvas>
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 <script src="js/Entities.js"></script>
-<script>
- var ctx = document.getElementById('ctx').getContext("2d");
- ctx.font = '30px Ariel';
- var WIDTH = 500;
- var HEIGHT = 500;
- 
+<script> 
+var ctx = document.getElementById("ctx").getContext("2d"); 
+ctx.font = '30px Arial';
 
- var timeWhenGameStarted = Date.now();
- var frameCount = 0;
- var score = 0;
+var WIDTH = 500;
+var HEIGHT = 500;
+var timeWhenGameStarted = Date.now();	//return time in ms
 
- var Img ={}
- Img.player = new Image();
- Img.player.src = "img/player.png";
- Img.enemy = new Image();
- Img.enemy.src = "img/enemy.png";
- Img.bullet = new Image();
- Img.bullet.src = "img/bullet.png";
- Img.upgrade1 = new Image();
- Img.upgrade1.src = "img/upgrade1.png";
- Img.upgrade2 = new Image();
- Img.upgrade2.src = "img/upgrade2.png";
- Img.map = new Image();
- Img.map.src = "img/map.png";
- 
+var frameCount = 0;
 
- document.onmousemove = function(mouse){
-     var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
-     var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+var score = 0;
 
-     player.x = mouseX;
-     player.y = mouseY;
+var Img = {};
+Img.player = new Image();
+Img.player.src = "img/player.png";
+Img.enemy = new Image();
+Img.enemy.src = 'img/enemy.png';
+Img.bullet = new Image();
+Img.bullet.src = 'img/bullet.png';
+Img.upgrade1 = new Image();
+Img.upgrade1.src = 'img/upgrade1.png';
+Img.upgrade2 = new Image();
+Img.upgrade2.src = 'img/upgrade2.png';
 
-     player.aimAngle = Math.atan2(mouseX,mouseY) / Math.PI * 180;
- }
 
- document.onkeydown = function(event){
-     if(event.keyCode === 68)//d
-       player.pressingRight = true;
-     else if(event.keyCode === 83)//s
-        player.pressingDown = true;
-     else if(event.keyCode === 65)//a
-        player.pressingLeft = true;
-     else if(event.keyCode === 87)//w
-         player.pressingUp = true;
- }
 
- document.onkeyup = function(event){
-     if(event.keyCode === 68)//d
-       player.pressingRight = false;
-     else if(event.keyCode === 83)//s
-        player.pressingDown = false;
-     else if(event.keyCode === 65)//a
-        player.pressingLeft = false;
-     else if(event.keyCode === 87)//w
-         player.pressingUp = false;
- }
-
- 
 testCollisionRectRect = function(rect1,rect2){
-    return rect1.x <= rect2.x + rect2.width && rect2.x <= rect1.x + rect1.width && rect1.y <=rect2.y+rect2.height &&rect2.y <= rect1.y + rect1.height;
+	return rect1.x <= rect2.x+rect2.width 
+		&& rect2.x <= rect1.x+rect1.width
+		&& rect1.y <= rect2.y + rect2.height
+		&& rect2.y <= rect1.y + rect1.height;
 }
 
- document.onclick = function(mouse){
-    player.performAttack(player);
- }
+document.onclick = function(mouse){
+	player.performAttack();
+}
 
- document.oncontextmenu = function(mouse){//on right click
-     player.performSpecialAttack(player);
-     mouse.preventDefault();
- }
+document.oncontextmenu = function(mouse){
+	player.performSpecialAttack();
+	mouse.preventDefault();
+}
 
- var counter = 0;
- update = function(){
-     ctx.clearRect(0,0,WIDTH,HEIGHT);
-     
-     currentMap.draw();
+document.onmousemove = function(mouse){
+	var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+	var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+	
+	mouseX -= WIDTH/2;
+	mouseY -= HEIGHT/2;
+	
+	player.aimAngle = Math.atan2(mouseY,mouseX) / Math.PI * 180;
+}
 
-     frameCount ++;
-     score ++;
-     if(frameCount % 100 === 0){
-         randomlyGenerateEnemy();
-     }
+document.onkeydown = function(event){
+	if(event.keyCode === 68)	//d
+		player.pressingRight = true;
+	else if(event.keyCode === 83)	//s
+		player.pressingDown = true;
+	else if(event.keyCode === 65) //a
+		player.pressingLeft = true;
+	else if(event.keyCode === 87) // w
+		player.pressingUp = true;
+}
 
-     if(frameCount % 75 === 0){
-         randomlyGenerateUpgrade();
-     }
-     player.attackCounter += player.atkSpd;
-     
+document.onkeyup = function(event){
+	if(event.keyCode === 68)	//d
+		player.pressingRight = false;
+	else if(event.keyCode === 83)	//s
+		player.pressingDown = false;
+	else if(event.keyCode === 65) //a
+		player.pressingLeft = false;
+	else if(event.keyCode === 87) // w
+		player.pressingUp = false;
+}
 
-     for(var key in bulletList){
-         bulletList[key].update();
+update = function(){
+	ctx.clearRect(0,0,WIDTH,HEIGHT);
+	currentMap.draw();
+	frameCount++;
+	score++;
+	
+	if(frameCount % 100 === 0)	//every 4 sec
+		randomlyGenerateEnemy();
 
-     }
+	if(frameCount % 75 === 0)	//every 3 sec
+		randomlyGenerateUpgrade();
+	
+	
+	
+	for(var key in bulletList){
+		var b = bulletList[key];
+		b.update();
+		
+		var toRemove = false;
+		b.timer++;
+		if(b.timer > 75){
+			toRemove = true;
+		}
+		
+		if(b.combatType === 'player'){	//bullet was shot by player
+			for(var key2 in enemyList){
+				if(b.testCollision(enemyList[key2])){
+					toRemove = true;
+					delete enemyList[key2];
+				}				
+			}
+		} else if(b.combatType === 'enemy'){
+			if(b.testCollision(player)){
+				toRemove = true;
+				player.hp -= 1;
+			}
+		}	
+		
+		
+		if(toRemove){
+			delete bulletList[key];
+		}
+	}
+	
+	for(var key in upgradeList){
+		upgradeList[key].update();
+		var isColliding = player.testCollision(upgradeList[key]);
+		if(isColliding){
+			if(upgradeList[key].category === 'score')
+				score += 1000;
+			if(upgradeList[key].category === 'atkSpd')
+				player.atkSpd += 3;
+			delete upgradeList[key];
+		}
+	}
+	
+	for(var key in enemyList){
+		enemyList[key].update();
+		enemyList[key].performAttack();
+	}
+	if(player.hp <= 0){
+		var timeSurvived = Date.now() - timeWhenGameStarted;		
+		console.log("You lost! You survived for " + timeSurvived + " ms.");		
+		startNewGame();
+	}
+	player.update();
+	
+	ctx.fillText(player.hp + " Hp",0,30);
+	ctx.fillText('Score: ' + score,200,30);
+}
 
-     for(var key in upgradeList){
-         upgradeList[key].update();
-
-     }
-     
-     for(var key in enemyList){
-         enemyList[key].update();
-
-        }
-
-        player.update();
-        ctx.fillText(player.hp + ' HP',0,30);
-        ctx.fillText("Score: " + score,200,30);
-    }
-    Maps = function(id,imgSrc,width,height){
-        var self = {
-            id:id,
-            image: new Image(),
-            width:width,
-            height: height
-        }
-        self.image.src = imgSrc;
-
-        self.draw = function(){
-            var x = WIDTH/2 - player.x;
-            var y = HEIGHT/2 - player.y;
-            ctx.drawImage(self.image,0,0,self.image.width,self.image.height,x,y,self.image.width *2, self.image.height * 2);
-        }
-        return self;
-    }
-
-    currentMap = Maps('field','img/map.png',1280,960);
-
-    startNewGame = function(){
-        player.hp = 10;
-        whenGameStarted = Date.now();
-        score = 0;
-        frameCount = 0;
-        enemyList = {};
-        upgradeList = {};
-        bulletList = {};
-        randomlyGenerateEnemy();
-        randomlyGenerateEnemy();
-        randomlyGenerateEnemy();
-    }
-
-    player = player();
-    startNewGame();
-    setInterval(update,40);
-
-    
+startNewGame = function(){
+	player.hp = 10;
+	timeWhenGameStarted = Date.now();
+	frameCount = 0;
+	score = 0;
+	enemyList = {};
+	upgradeList = {};
+	bulletList = {};
+	randomlyGenerateEnemy();
+	randomlyGenerateEnemy();
+	randomlyGenerateEnemy();
+	
+}
 
 
-</script>  
+Maps = function(id,imgSrc,width,height){
+	var self = {
+		id:id,
+		image:new Image(),
+		width:width,
+		height:height	
+	}
+	self.image.src = imgSrc;
+	
+	
+	self.draw = function(){
+		var x = WIDTH/2 - player.x;
+		var y = HEIGHT/2 - player.y;
+		ctx.drawImage(self.image,0,0,self.image.width,self.image.height,x,y,self.image.width*2,self.image.height*2);
+	}
+	return self;
+}
+
+
+currentMap = Maps('field','img/map.png',1280,960);
+
+
+
+
+player = Player();
+startNewGame();
+
+setInterval(update,40);
+
+
+
+
+</script>
