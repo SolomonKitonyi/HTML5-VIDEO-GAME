@@ -70,10 +70,10 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 		self.x += self.spdX;
 		self.y += self.spdY;
 
-		if (self.x < 0 || self.x > WIDTH) {
+		if (self.x < 0 || self.x > currentMap.width) {
 			self.spdX = -self.spdX;
 		}
-		if (self.y < 0 || self.y > HEIGHT) {
+		if (self.y < 0 || self.y > currentMap.height) {
 			self.spdY = -self.spdY;
 		}
 	};
@@ -98,12 +98,12 @@ player = function () {
 
 		//isPositionValidself.updatePosition
 		if (player.x < player.width / 2) player.x = player.width / 2;
-		if (player.x > WIDTH - player.width / 2)
-			player.x = WIDTH - player.width / 2;
+		if (player.x > currentMap.width - player.width / 2)
+			player.x = currentMap.width - player.width / 2;
 
 		if (player.y < player.height / 2) player.y = player.height / 2;
-		if (player.y > HEIGHT - player.height / 2)
-			player.y = HEIGHT - player.height / 2;
+		if (player.y > currentMap.height - player.height / 2)
+			player.y = currentMap.height - player.height / 2;
 	};
 
 	var super_update = self.update;
@@ -235,8 +235,8 @@ Bullet = function (id, x, spdX, y, spdY, width, height) {
 	bulletList[id] = self;
 };
 randomlyGenerateEnemy = function () {
-	var x = Math.random() * WIDTH;
-	var y = Math.random() * HEIGHT;
+	var x = Math.random() * currentMap.width;
+	var y = Math.random() * currentMap.height;
 	var height = 64;
 	var width = 64;
 	var id = Math.random();
@@ -246,8 +246,8 @@ randomlyGenerateEnemy = function () {
 };
 
 randomlyGenerateUpgrade = function () {
-	var x = Math.random() * WIDTH;
-	var y = Math.random() * HEIGHT;
+	var x = Math.random() * currentMap.width;
+	var y = Math.random() * currentMap.height;
 	var height = 32;
 	var width = 32;
 	var id = Math.random();

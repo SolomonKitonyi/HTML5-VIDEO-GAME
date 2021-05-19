@@ -6,6 +6,7 @@
  ctx.font = '30px Ariel';
  var WIDTH = 500;
  var HEIGHT = 500;
+ 
 
  var timeWhenGameStarted = Date.now();
  var frameCount = 0;
@@ -109,24 +110,6 @@ testCollisionRectRect = function(rect1,rect2){
         ctx.fillText(player.hp + ' HP',0,30);
         ctx.fillText("Score: " + score,200,30);
     }
-
-    startNewGame = function(){
-        player.hp = 10;
-        whenGameStarted = Date.now();
-        score = 0;
-        frameCount = 0;
-        enemyList = {};
-        upgradeList = {};
-        bulletList = {};
-        randomlyGenerateEnemy();
-        randomlyGenerateEnemy();
-        randomlyGenerateEnemy();
-    }
-
-    player = player();
-    startNewGame();
-    setInterval(update,40);
-
     Maps = function(id,imgSrc,width,height){
         var self = {
             id:id,
@@ -145,5 +128,25 @@ testCollisionRectRect = function(rect1,rect2){
     }
 
     currentMap = Maps('field','img/map.png',1280,960);
+
+    startNewGame = function(){
+        player.hp = 10;
+        whenGameStarted = Date.now();
+        score = 0;
+        frameCount = 0;
+        enemyList = {};
+        upgradeList = {};
+        bulletList = {};
+        randomlyGenerateEnemy();
+        randomlyGenerateEnemy();
+        randomlyGenerateEnemy();
+    }
+
+    player = player();
+    startNewGame();
+    setInterval(update,40);
+
+    
+
 
 </script>  
