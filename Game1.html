@@ -11,6 +11,7 @@ var timeWhenGameStarted = Date.now();	//return time in ms
 var frameCount = 0;
 
 var score = 0;
+var paused = false;
 
 var Img = {};
 Img.player = new Image();
@@ -61,6 +62,8 @@ document.onkeydown = function(event){
 		player.pressingLeft = true;
 	else if(event.keyCode === 87) // w
 		player.pressingUp = true;
+    else if(event.keyCode === 80)// p
+       paused = ! paused;
 }
 
 document.onkeyup = function(event){
@@ -75,6 +78,12 @@ document.onkeyup = function(event){
 }
 
 update = function(){
+
+    if(paused){
+        ctx.fillText("Paused",WIDTH/2,HEIGHT/2)
+        return;
+    }
+
 	ctx.clearRect(0,0,WIDTH,HEIGHT);
 	currentMap.draw();
 	frameCount++;
